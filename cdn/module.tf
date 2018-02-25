@@ -10,9 +10,9 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-data "aws_route53_zone" "default" {
-  zone_id = "${var.r53_zone_id}"
-}
+# data "aws_route53_zone" "default" {
+#   zone_id = "${var.r53_zone_id}"
+# }
 
 data "aws_ami" "default" {
   most_recent = true
@@ -88,11 +88,11 @@ resource "aws_route_table" "public" {
   }
 }
 
-resource "aws_route_table_association" "public" {
-  count          = "${length(data.aws_availability_zones.available.names)}"
-  subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
-  route_table_id = "${element(aws_route_table.public.*.id, count.index)}"
-}
+# resource "aws_route_table_association" "public" {
+#   count          = "${length(data.aws_availability_zones.available.names)}"
+#   subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
+#   route_table_id = "${element(aws_route_table.public.*.id, count.index)}"
+# }
 
 resource "aws_security_group" "default" {
   vpc_id = "${aws_vpc.main.id}"
@@ -125,28 +125,28 @@ resource "aws_instance" "server" {
   }
 }
 
-resource "aws_route53_record" "cdnv4" {
-  zone_id        = "${data.aws_route53_zone.default.zone_id}"
-  name           = "${format("%s.%s", var.r53_domain_name, data.aws_route53_zone.default.name)}"
-  type           = "A"
-  ttl            = "60"
-  records        = ["${aws_instance.server.*.public_ip}"]
-  set_identifier = "cdn-${var.region}-v4"
+# resource "aws_route53_record" "cdnv4" {
+#   zone_id        = "${data.aws_route53_zone.default.zone_id}"
+#   name           = "${format("%s.%s", var.r53_domain_name, data.aws_route53_zone.default.name)}"
+#   type           = "A"
+#   ttl            = "60"
+#   records        = ["${aws_instance.server.*.public_ip}"]
+#   set_identifier = "cdn-${var.region}-v4"
 
-  latency_routing_policy {
-    region = "${var.region}"
-  }
-}
+#   latency_routing_policy {
+#     region = "${var.region}"
+#   }
+# }
 
-resource "aws_route53_record" "cdnv6" {
-  zone_id        = "${data.aws_route53_zone.default.zone_id}"
-  name           = "${format("%s.%s", var.r53_domain_name, data.aws_route53_zone.default.name)}"
-  type           = "AAAA"
-  ttl            = "60"
-  records        = ["${flatten(aws_instance.server.*.ipv6_addresses)}"]
-  set_identifier = "cdn-${var.region}-v6"
+# resource "aws_route53_record" "cdnv6" {
+#   zone_id        = "${data.aws_route53_zone.default.zone_id}"
+#   name           = "${format("%s.%s", var.r53_domain_name, data.aws_route53_zone.default.name)}"
+#   type           = "AAAA"
+#   ttl            = "60"
+#   records        = ["${flatten(aws_instance.server.*.ipv6_addresses)}"]
+#   set_identifier = "cdn-${var.region}-v6"
 
-  latency_routing_policy {
-    region = "${var.region}"
-  }
-}
+#   latency_routing_policy {
+#     region = "${var.region}"
+#   }
+# }
