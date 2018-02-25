@@ -19,25 +19,25 @@ data "aws_ami" "default" {
 
   filter {
     name   = "name"
-    values = ["amzn-ami-hvm-2016.09*"]
+    values = ["terraform-acc-ami-copy"]
   }
 
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
+  # filter {
+  #   name   = "architecture"
+  #   values = ["x86_64"]
+  # }
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+  # filter {
+  #   name   = "virtualization-type"
+  #   values = ["hvm"]
+  # }
 
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
+  # filter {
+  #   name   = "root-device-type"
+  #   values = ["ebs"]
+  # }
 
-  owners = ["amazon"]
+  owners = ["self"]
 }
 
 resource "aws_vpc" "main" {
